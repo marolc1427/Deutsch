@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import json
-import random
 
 
 def list_json_files(dirpath):
@@ -33,43 +32,16 @@ def ask(prompt):
 
 def main():
     here = os.path.dirname(__file__)
-    files = list_json_files(here)
-    if not files:
-        print('No hay archivos JSON en el directorio.')
+    sel = 'a1.json'
+    path = os.path.join(here, sel)
+    if not os.path.exists(path):
+        print(f'No se encontró {sel} en el directorio.')
         return
 
-    print('Elige un archivo de sustantivos:')
-    for i, (name, count) in enumerate(files, 1):
-        print(f"{i}. {name} ({count} palabras)")
-
-    choice = ask("Número o nombre (o 'q' para salir): ")
-    if choice.lower() == 'q':
-        print('Fin del juego.')
-        return
-
-    sel = None
-    if choice.isdigit():
-        idx = int(choice) - 1
-        if 0 <= idx < len(files):
-            sel = files[idx][0]
-    else:
-        for name, count in files:
-            if name == choice:
-                sel = name
-                break
-
-    if not sel:
-        print('Selección inválida.')
-        return
-
-    data = load_json(os.path.join(here, sel))
+    data = load_json(path)
     if not isinstance(data, list) or len(data) == 0:
         print('Archivo vacío o con formato incorrecto.')
         return
-
-    shuffle = ask("Aleatorizar orden? (s/n) [n]: ").lower() in ('s', 'si', 'y', 'yes')
-    if shuffle:
-        random.shuffle(data)
 
     for item in data:
         articulo = item.get('articulo', '').strip()
@@ -81,26 +53,31 @@ def main():
         print(f"Alemán: {singular}  —  Español: {traduccion}")
 
         # artículo
-        ans = ask('Artículo > ')
-        if ans.lower() == 'q':
-            break
-        if ans.casefold() == articulo.casefold():
-            print('Artículo: correcto')
-        else:
-            print(f'Artículo: incorrecto — respuesta: {articulo}')
-        # (No se pide el singular; ya aparece en el enunciado)
+        while True:
+            ans = ask('Artículo > ')
+            if ans.lower() == 'q':
+                print('Saliendo...')
+                return
+            if ans.casefold() == articulo.casefold():
+                print('Artículo: correcto')
+                break
+            else:
+                print('Artículo: incorrecto — inténtalo de nuevo')
 
         # plural
         if plural.lower() in ('n/a', 'na', '', 'none'):
-            print('Nota: esta palabra no tiene plural. No introduzcas plural.')
+            print('Nota: esta palabra no tiene plural.')
         else:
-            ans = ask('Plural > ')
-            if ans.lower() == 'q':
-                break
-            if ans.casefold() == plural.casefold():
-                print('Plural: correcto')
-            else:
-                print(f'Plural: incorrecto — respuesta: {plural}')
+            while True:
+                ans = ask('Plural > ')
+                if ans.lower() == 'q':
+                    print('Saliendo...')
+                    return
+                if ans.casefold() == plural.casefold():
+                    print('Plural: correcto')
+                    break
+                else:
+                    print('Plural: incorrecto — inténtalo de nuevo')
     print('\nFin del juego.')
 
 
