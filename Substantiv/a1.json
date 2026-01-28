@@ -181,4 +181,6 @@
   {"articulo": "der", "singular": "Mensch", "plural": "Menschen", "traduccion": "el ser humano"},
   {"articulo": "der", "singular": "Patient", "plural": "Patienten", "traduccion": "el paciente"},
   {"articulo": "der", "singular": "Psychologe", "plural": "Psychologen", "traduccion": "el psicólogo"}
+  ,{"articulo": "die", "singular": "Vorstellung", "plural": "Vorstellungen", "traduccion": "la presentación"},
+  {"articulo": "das", "singular": "Gespräch", "plural": "Gespräche", "traduccion": "la conversación"}
 ]
