@@ -32,52 +32,67 @@ def ask(prompt):
 
 def main():
     here = os.path.dirname(__file__)
-    sel = 'a1.json'
-    path = os.path.join(here, sel)
-    if not os.path.exists(path):
-        print(f'No se encontró {sel} en el directorio.')
-        return
+    # Cargar varios bloques JSON en el orden especificado
+    file_order = [
+        'personas.json',
+        'objetos_entornos.json',
+        'alimentacion.json',
+        'ciudad.json',
+        'trabajo.json',
+        'sociedad_naturaleza.json',
+        'abstractos.json',
+    ]
 
-    data = load_json(path)
-    if not isinstance(data, list) or len(data) == 0:
-        print('Archivo vacío o con formato incorrecto.')
-        return
+    for sel in file_order:
+        path = os.path.join(here, sel)
+        if not os.path.exists(path):
+            print(f'No se encontró {sel} — se salta.')
+            continue
 
-    for item in data:
-        articulo = item.get('articulo', '').strip()
-        singular = item.get('singular', '').strip()
-        plural = item.get('plural', '').strip()
-        traduccion = item.get('traduccion', '').strip()
+        data = load_json(path)
+        if not isinstance(data, list) or len(data) == 0:
+            print(f'Archivo {sel} vacío o con formato incorrecto. Se salta.')
+            continue
 
-        print('\n---')
-        print(f"Alemán: {singular}  —  Español: {traduccion}")
+        # Aviso al cambiar de bloque
+        bloque = os.path.splitext(sel)[0]
+        print(f"\n\n=== Cambiando a bloque: {bloque} ===\n")
 
-        # artículo
-        while True:
-            ans = ask('Artículo > ')
-            if ans.lower() == 'q':
-                print('Saliendo...')
-                return
-            if ans.casefold() == articulo.casefold():
-                print('Artículo: correcto')
-                break
-            else:
-                print('Artículo: incorrecto — inténtalo de nuevo')
+        for item in data:
+            articulo = item.get('articulo', '').strip()
+            singular = item.get('singular', '').strip()
+            plural = item.get('plural', '').strip()
+            traduccion = item.get('traduccion', '').strip()
 
-        # plural
-        if plural.lower() in ('n/a', 'na', '', 'none'):
-            print('Nota: esta palabra no tiene plural.')
-        else:
+            print('\n---')
+            print(f"Alemán: {singular}  —  Español: {traduccion}")
+
+            # artículo
             while True:
-                ans = ask('Plural > ')
+                ans = ask('Artículo > ')
                 if ans.lower() == 'q':
                     print('Saliendo...')
                     return
-                if ans.casefold() == plural.casefold():
-                    print('Plural: correcto')
+                if ans.casefold() == articulo.casefold():
+                    print('Artículo: correcto')
                     break
                 else:
-                    print('Plural: incorrecto — inténtalo de nuevo')
+                    print('Artículo: incorrecto — inténtalo de nuevo')
+
+            # plural
+            if plural.lower() in ('n/a', 'na', '', 'none'):
+                print('Nota: esta palabra no tiene plural.')
+            else:
+                while True:
+                    ans = ask('Plural > ')
+                    if ans.lower() == 'q':
+                        print('Saliendo...')
+                        return
+                    if ans.casefold() == plural.casefold():
+                        print('Plural: correcto')
+                        break
+                    else:
+                        print('Plural: incorrecto — inténtalo de nuevo')
     print('\nFin del juego.')
 
 
