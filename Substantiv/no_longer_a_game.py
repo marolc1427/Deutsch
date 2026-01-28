@@ -43,7 +43,6 @@ def main():
         'sociedad_naturaleza.json',
         'abstractos.json',
     ]
-
     # Menú selector: al principio y tras completar cada bloque
     options = {str(i + 1): f for i, f in enumerate(file_order)}
     options.update({os.path.splitext(f)[0]: f for f in file_order})
@@ -96,7 +95,7 @@ def main():
             traduccion = item.get('traduccion', '').strip()
 
             print('\n---')
-            print(f"Alemán: {singular}  —  Español: {traduccion}")
+            print(f"Español: {traduccion}")
 
             # artículo
             while True:
@@ -110,12 +109,24 @@ def main():
                 else:
                     print('Artículo: incorrecto — inténtalo de nuevo')
 
-            # plural
+            # singular (alemán)
+            while True:
+                ans = ask('Singular (alemán) > ')
+                if ans.lower() == 'q':
+                    print('Saliendo...')
+                    return
+                if ans.casefold() == singular.casefold():
+                    print('Singular: correcto')
+                    break
+                else:
+                    print('Singular: incorrecto — inténtalo de nuevo')
+
+            # plural (alemán)
             if plural.lower() in ('n/a', 'na', '', 'none'):
                 print('Nota: esta palabra no tiene plural.')
             else:
                 while True:
-                    ans = ask('Plural > ')
+                    ans = ask('Plural (alemán) > ')
                     if ans.lower() == 'q':
                         print('Saliendo...')
                         return
